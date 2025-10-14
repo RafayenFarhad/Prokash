@@ -15,6 +15,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, password_confirmation: string) => Promise<RegistrationResponse>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
   isAuthenticated: boolean;
   isAdmin: boolean;
   loading: boolean;
@@ -75,6 +76,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('user');
   };
 
+  const refreshUser = async () => {
+    try {
+      const response = await api.get<{ user: User }>('/me');
+      const updatedUser = response.data.user;
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    } catch (error) {
+      console.error('Error refreshing user:', error);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -83,6 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         register,
         logout,
+        refreshUser,
         isAuthenticated: !!token,
         isAdmin: user?.role === 'admin',
         loading,

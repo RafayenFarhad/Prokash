@@ -6,22 +6,29 @@ import PostCard from '../components/PostCard';
 import { User, Mail, Calendar, Award, TrendingUp, Star, Shield } from 'lucide-react';
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(user);
 
   useEffect(() => {
-    fetchUserPosts();
+    fetchUserData();
   }, []);
 
-  const fetchUserPosts = async () => {
+  const fetchUserData = async () => {
     try {
+      // Refresh user data from server to get latest trust_score
+      await refreshUser();
+      
+      // Fetch user posts
       const response = await api.get('/posts');
-      // Filter posts by current user
       const userPosts = response.data.data?.filter((post: Post) => post.user_id === user?.id) || [];
       setPosts(userPosts);
+      
+      // Update current user state
+      setCurrentUser(user);
     } catch (error) {
-      console.error('Error fetching user posts:', error);
+      console.error('Error fetching user data:', error);
     } finally {
       setLoading(false);
     }
@@ -127,12 +134,14 @@ export default function Profile() {
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-600 font-medium">Trust Score</span>
-                <span className="text-2xl font-bold text-blue-600">{user.trust_score?.toFixed(1) || '0.0'}</span>
+                <span className="text-2xl font-bold text-blue-600">
+                  {Number(currentUser?.trust_score || user?.trust_score || 0).toFixed(1)}
+                </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-3">
                 <div 
                   className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${user.trust_score || 0}%` }}
+                  style={{ width: `${Number(currentUser?.trust_score || user?.trust_score || 0)}%` }}
                 ></div>
               </div>
               <p className="text-sm text-gray-500 mt-1">Out of 100</p>
