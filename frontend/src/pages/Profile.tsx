@@ -17,8 +17,12 @@ export default function Profile() {
 
   const fetchUserData = async () => {
     try {
-      // Refresh user data from server to get latest trust_score
-      await refreshUser();
+      // Try to refresh user data from server to get latest trust_score
+      try {
+        await refreshUser();
+      } catch (refreshError) {
+        console.log('Could not refresh user data, using cached data');
+      }
       
       // Fetch user posts
       const response = await api.get('/posts');
@@ -29,6 +33,8 @@ export default function Profile() {
       setCurrentUser(user);
     } catch (error) {
       console.error('Error fetching user data:', error);
+      // Still set current user even if posts fetch fails
+      setCurrentUser(user);
     } finally {
       setLoading(false);
     }
