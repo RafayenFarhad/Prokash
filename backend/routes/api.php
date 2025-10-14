@@ -96,8 +96,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::get('/admin/stats', [AdminController::class, 'stats']);
         Route::get('/admin/users', [AdminController::class, 'users']);
-        Route::put('/admin/users/{id}', [AdminController::class, 'updateUser']);
-        Route::delete('/admin/users/{id}', [AdminController::class, 'deleteUser']);
+        Route::put('/admin/users/{userId}/role', [AdminController::class, 'updateUserRole']);
+        Route::put('/admin/users/{userId}/toggle-status', [AdminController::class, 'toggleUserStatus']);
+        Route::delete('/admin/users/{userId}', [AdminController::class, 'deleteUser']);
         // AI Auto-generation (Admin only)
         Route::post('/admin/ai/generate-weather-alerts', [AIController::class, 'generateWeatherAlerts']);
         Route::post('/admin/ai/generate-traffic-alerts', [AIController::class, 'generateTrafficAlerts']);
@@ -106,7 +107,6 @@ Route::middleware('auth:sanctum')->group(function () {
         // Analytics Dashboard (Admin only)
         Route::get('/admin/analytics/dashboard', [AnalyticsController::class, 'dashboard']);
         Route::get('/admin/analytics/community-stats', [AnalyticsController::class, 'communityStats']);
-        Route::delete('/admin/users/{userId}', [AdminController::class, 'deleteUser']);
         Route::get('/admin/posts', [AdminController::class, 'posts']);
         Route::delete('/admin/posts/{postId}', [AdminController::class, 'deletePost']);
         
