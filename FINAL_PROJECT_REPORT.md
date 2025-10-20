@@ -4,10 +4,10 @@
 ---
 
 **Project Title:** Prokash - Community Alert & Verification System  
-**Submitted By:** Rafayen Farhad  
-**Student ID:** [Your Student ID]  
+**Submitted By:** Md. Hridoy  
+**Student ID:** 011211049
 **Course:** Software Engineering Project  
-**Institution:** [University Name]  
+**Institution:** United International University  
 **Submission Date:** October 14, 2024
 
 ---
